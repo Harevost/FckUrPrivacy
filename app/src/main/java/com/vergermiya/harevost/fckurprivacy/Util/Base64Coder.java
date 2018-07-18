@@ -12,8 +12,8 @@ import java.io.FileInputStream;
 
 public class Base64Coder {
 
-    public static void file2Base64(File file) {
-        String base64Str;
+    public static String file2Base64(File file) {
+        String base64Str = null;
         FileInputStream inputStream;
         try {
             inputStream = new FileInputStream(file);
@@ -25,5 +25,6 @@ public class Base64Coder {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return base64Str;
     }
 }

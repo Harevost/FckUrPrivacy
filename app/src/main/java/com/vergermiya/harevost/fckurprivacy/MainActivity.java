@@ -13,7 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.vergermiya.harevost.fckurprivacy.CallLogger.CallLogger;
-import com.vergermiya.harevost.fckurprivacy.CallLogger.CallLogs;
+import com.vergermiya.harevost.fckurprivacy.CallLogger.CallLogsJson;
 import com.vergermiya.harevost.fckurprivacy.CallRecorder.CallRecord;
 import com.vergermiya.harevost.fckurprivacy.InfoChecker.InfoChecker;
 import com.vergermiya.harevost.fckurprivacy.InfoChecker.InfoJson;
@@ -76,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initEvent() {
+
         getInfoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -102,8 +103,8 @@ public class MainActivity extends AppCompatActivity {
         getCallLogsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                CallLogs callLogs = CallLogger.getLatestCallLog(MainActivity.this);
-                gottenInfoText.setText(callLogs.toString());
+                CallLogsJson callLogsJson = CallLogger.getLatestCallLog(MainActivity.this);
+                gottenInfoText.setText(callLogsJson.toString());
             }
         });
 
@@ -168,6 +169,7 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == REQUEST_CODE && resultCode == PermissionsActivity.PERMISSIONS_DENIED) {
             finish();
         }
+        InfoChecker.saveInfoJson(this);
     }
 
 }

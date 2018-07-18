@@ -16,8 +16,8 @@ import java.util.ArrayList;
 
 public class CallLogger {
 
-    public static ArrayList<CallLogs> queryCallLogs(Context context) {
-        ArrayList<CallLogs> callLogs = new ArrayList<>();
+    public static ArrayList<CallLogsJson> queryCallLogsJson(Context context) {
+        ArrayList<CallLogsJson> CallLogsJson = new ArrayList<>();
         ContentResolver contentResolver = context.getContentResolver();
         Uri uri = CallLog.Calls.CONTENT_URI;
         String[] mProjection = new String[]{
@@ -39,14 +39,14 @@ public class CallLogger {
             String callDateStr = dateFormat.format(callDate);
 
             int callType = c.getInt(c.getColumnIndex(CallLog.Calls.TYPE));
-            String[] callTypeStr = {"来电", "去电", "未接"};
+            String[] callTypeStr = {"Incoming", "Outgoing", "Missing"};
 
-            CallLogs mCallLogs = new CallLogs(callName, phoneNumber, callDateStr, callTypeStr[callType - 1]);
-            callLogs.add(mCallLogs);
-            Log.d("callLogs", mCallLogs.toString());
+            CallLogsJson mCallLogsJson = new CallLogsJson(callName, phoneNumber, callDateStr, callTypeStr[callType - 1]);
+            CallLogsJson.add(mCallLogsJson);
+            Log.d("CallLogsJson", mCallLogsJson.toString());
         }
         c.close();
-        return callLogs;
+        return CallLogsJson;
     }
 
     public static void deleteLatestCallLog(Context context) {
@@ -65,19 +65,19 @@ public class CallLogger {
             if (c.moveToFirst()) {
                 String callId = c.getString(c.getColumnIndex(CallLog.Calls._ID));
                 contentResolver.delete(uri, "_id=?", new String[]{callId + ""});
-                Log.d("CallLogs", callId + ":" + c.getString(c.getColumnIndex(CallLog.Calls.NUMBER)));
+                Log.d("CallLogsJson", callId + ":" + c.getString(c.getColumnIndex(CallLog.Calls.NUMBER)));
             }
         }
         c.close();
     }
 
-    public static CallLogs getLatestCallLog(Context context) {
-        CallLogs mCallLogs = new CallLogs();
-        ArrayList<CallLogs> callLogs = queryCallLogs(context);
-        if (!callLogs.isEmpty()) {
-            mCallLogs = callLogs.get(0);
+    public static CallLogsJson getLatestCallLog(Context context) {
+        CallLogsJson mCallLogsJson = new CallLogsJson("", "", "", "");
+        ArrayList<CallLogsJson> CallLogsJson = queryCallLogsJson(context);
+        if (!CallLogsJson.isEmpty()) {
+            mCallLogsJson = CallLogsJson.get(0);
         }
-        return mCallLogs;
+        return mCallLogsJson;
     }
 
 }
