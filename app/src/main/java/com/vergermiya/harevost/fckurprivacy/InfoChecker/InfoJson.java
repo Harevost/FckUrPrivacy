@@ -24,7 +24,7 @@ public class InfoJson {
         this.SerialNo = serialNo;
         this.DeviceType = devType;
         this.Ip = ip;
-        this.NetworkMac = netMac;
+        this.NetworkMac = netMac == null ? "" : netMac;
         this.BluetoothMac = btMac;
     }
 
