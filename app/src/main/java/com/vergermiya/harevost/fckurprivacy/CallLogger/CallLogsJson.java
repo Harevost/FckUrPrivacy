@@ -18,10 +18,10 @@ public class CallLogsJson {
         this.callType = callType;
     }
 
-    public String getPhoneNumber() { return phoneNumber; }
-    public String getCallDate() { return callDate; }
-    public String getCallType() { return callType; }
-    public String getCallName() { return callName; }
+    public String getPhoneNumber() { return phoneNumber.replace(" ", "_"); }
+    public String getCallDate() { return callDate.replace(" ", "_"); }
+    public String getCallType() { return callType.replace(" ", "_"); }
+    public String getCallName() { return callName.replace(" ", "_"); }
 
     @Override
     public String toString() {

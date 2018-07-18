@@ -28,15 +28,15 @@ public class InfoJson {
         this.BluetoothMac = btMac;
     }
 
-    public String getImei() { return Imei; }
-    public String getImsi() { return Imsi; }
-    public String getDeviceVersion() { return DeviceVersion; }
-    public String getIccid() { return Iccid; }
-    public String getSerialNo() { return SerialNo; }
-    public String getDeviceType() { return DeviceType; }
-    public String getIp() { return Ip; }
-    public String getNetworkMac() { return NetworkMac; }
-    public String getBluetoothMac() { return BluetoothMac; }
+    public String getImei() { return Imei.replace(" ", "_"); }
+    public String getImsi() { return Imsi.replace(" ", "_"); }
+    public String getDeviceVersion() { return DeviceVersion.replace(" ", "_"); }
+    public String getIccid() { return Iccid.replace(" ", "_"); }
+    public String getSerialNo() { return SerialNo.replace(" ", "_"); }
+    public String getDeviceType() { return DeviceType.replace(" ", "_"); }
+    public String getIp() { return Ip.replace(" ", "_"); }
+    public String getNetworkMac() { return NetworkMac.replace(" ", "_"); }
+    public String getBluetoothMac() { return BluetoothMac.replace(" ", "_"); }
 
     @Override
     public String toString() {

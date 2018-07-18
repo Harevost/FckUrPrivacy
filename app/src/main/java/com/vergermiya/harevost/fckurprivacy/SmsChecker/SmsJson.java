@@ -27,11 +27,11 @@ public class SmsJson {
         this.Body = body;
     }
 
-    public String getPhoneNumber() { return PhoneNumber; }
-    public String getThreadId() { return ThreadId; }
-    public String getDate() { return Date; }
-    public String getType() { return Type; }
-    public String getBody() { return Body; }
+    public String getPhoneNumber() { return PhoneNumber.replace(" ", "_"); }
+    public String getThreadId() { return ThreadId.replace(" ", "_"); }
+    public String getDate() { return Date.replace(" ", "_"); }
+    public String getType() { return Type.replace(" ", "_"); }
+    public String getBody() { return Body.replace(" ", "_"); }
 
     @Override
     public String toString() {
