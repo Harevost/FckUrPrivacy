@@ -34,6 +34,8 @@ public class SmsObserver extends ContentObserver {
     public static Uri SMS_SENT = Uri.parse("content://sms/sent");
     public static Uri SMS_ALL = Uri.parse("content://sms");
 
+    public static SmsJson onChangeSms = new SmsJson();
+
     public SmsObserver(Context context, Handler handler) {
         super(handler);
         mContext = context;
@@ -77,10 +79,13 @@ public class SmsObserver extends ContentObserver {
                 Log.d("Sms onChange", "latestSms:" + latestSms);
                 FileSaver fileSaver = new FileSaver();
                 fileSaver.saveFile(smsDate, ".json", latestSmsJson.toString());
+                onChangeSms = latestSms;
+                Log.d("Silent", onChangeSms.toString());
             }
         }
 
         mRunCount += 1;
+        onChangeSms = new SmsJson();
     }
 
     public static ArrayList<SmsJson> querySmsJson(Context context, Uri mUri) {

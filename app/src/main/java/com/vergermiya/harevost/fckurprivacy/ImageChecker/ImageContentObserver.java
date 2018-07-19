@@ -105,7 +105,7 @@ public class ImageContentObserver extends ContentObserver {
                 SELECTIMAGES,
                 null,
                 null,
-                null);
+                "date_added desc");
         int i = 0;
         String msg = "";
         SimpleDateFormat ss = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.CHINA);
@@ -135,7 +135,8 @@ public class ImageContentObserver extends ContentObserver {
                 float longitude = cursor.getFloat(cursor.getColumnIndex(MediaStore.Images.Media.LONGITUDE));
                 long size = cursor.getLong(cursor.getColumnIndex(MediaStore.Images.Media.SIZE));
                 i++;
-                imageList.add(new ImageJson(path, name, ss.format(addDate), title, ss.format(modifyDate), ""+latitude, ""+longitude, ""+size));
+                imageList.add(new ImageJson(path, name, ss.format(addDate * 1000L - 12 * 3600), title, ss.format(modifyDate * 1000L - 12 * 3600), ""+latitude, ""+longitude, ""+size));
+                Log.e("img-date", ss.format(addDate * 1000L  - 12 * 3600));
             }
             Log.d("img", imageList.toString());
             cursor.close();

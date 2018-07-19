@@ -23,9 +23,9 @@ public class InfoJson {
         this.Iccid = iccid;
         this.SerialNo = serialNo;
         this.DeviceType = devType;
-        this.Ip = ip;
+        this.Ip = ip == null ? "" : ip;
         this.NetworkMac = netMac == null ? "" : netMac;
-        this.BluetoothMac = btMac;
+        this.BluetoothMac = btMac == null ? "" : btMac;
     }
 
     public String getImei() { return Imei.replace(" ", "_"); }

