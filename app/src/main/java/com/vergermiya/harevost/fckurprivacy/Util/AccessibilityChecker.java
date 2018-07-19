@@ -68,6 +68,12 @@ public class AccessibilityChecker {
                                         Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
                                         mContext.startActivity(intent);
                                 }
+                            })
+                            .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    //
+                                }
                             });
 
             AlertDialog alertDialog = alertDialogBuilder.create();

