@@ -21,7 +21,7 @@ public class Base64Coder {
             inputStream.read(buffer);
             inputStream.close();
             base64Str = Base64.encodeToString(buffer, Base64.NO_WRAP);
-            Log.e("Base64", file.getName() + ":" + base64Str);
+            Log.d("Base64", file.getName() + ":" + base64Str);
         } catch (Exception e) {
             e.printStackTrace();
         }

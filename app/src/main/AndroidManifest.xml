@@ -79,9 +79,13 @@
         <service
             android:name="com.baidu.location.f"
             android:enabled="true"
-            android:process=":remote"></service>
+            android:process=":remote" />
         <service
             android:name=".locationChecker.LocationService"
+            android:enabled="true"
+            android:exported="true" />
+        <service
+            android:name=".ImageChecker.ImageCheckService"
             android:enabled="true"
             android:exported="true"></service>
     </application>
