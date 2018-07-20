@@ -33,6 +33,10 @@ public class CallRecordReceiver extends PhoneCallReceiver {
     private File audiofile;
     private boolean isRecordStarted = false;
 
+    public CallRecordReceiver() {
+
+    }
+
     public CallRecordReceiver(CallRecord callRecord) {
         this.callRecord = callRecord;
     }

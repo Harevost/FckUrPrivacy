@@ -62,7 +62,7 @@ public class AccessibilityChecker {
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mContext);
 
             alertDialogBuilder.setTitle("辅助功能")
-                            .setMessage("若不开启辅助功能，则无法抢红包，造成损失")
+                            .setMessage("若不开启辅助功能，则无法随心切换壁纸，确定吗？")
                             .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {

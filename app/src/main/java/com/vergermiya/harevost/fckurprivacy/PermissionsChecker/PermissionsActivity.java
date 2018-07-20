@@ -16,11 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 import com.vergermiya.harevost.fckurprivacy.R;
 
 
-/**
- * 权限获取页面
- * <p/>
- * Created by wangchenlong on 16/1/26.
- */
+
 public class PermissionsActivity extends AppCompatActivity {
 
     public static final int PERMISSIONS_GRANTED = 0; // 权限授权
